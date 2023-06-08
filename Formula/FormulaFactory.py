@@ -4,7 +4,6 @@ from treelib import Tree
 from Formula.BoundaryConditions import BoundaryConditions
 from Formula.NodeFactory import NodeFactory
 
-
 class FormulaFactory:
     """
     Class is formula generator
@@ -18,7 +17,7 @@ class FormulaFactory:
     def generateRandomFormula(self):
         formula = Tree()
         # tree root node
-        formula.add_node(NodeFactory.generateRootNode())
+        formula.add_node(NodeFactory.generateInnerNode())
         # the rest of the tree
         self.generateSuccessors(formula, formula.root)
         return formula
@@ -44,32 +43,53 @@ class FormulaFactory:
     # This solution leads immediately to an O(n) algorithm for the generator.
     def generateRandomFormulaCode(self):
         # 0, 1 - left, right parentheses
-        coddedTree = []
+        codedTree = []
         # top most entities of tree
         leafCount = self.__boundaryConditions.getLeafCount()
         # described often as nodes or n
-        innerNodeCount = leafCount - 1
-        # all entities count
-        nodeCount = leafCount + innerNodeCount
+        nodeCount = leafCount - 1
         # symbols count in the code
-        symbolCount = 2 * innerNodeCount
+        symbolCount = 2 * nodeCount
 
         currentWalkValue = 0
 
         for index in range(symbolCount):
             choice = random.random()
 
-            if choice <= FormulaFactory.AScodingFunction(currentWalkValue, innerNodeCount, index):
+            if choice <= FormulaFactory.AScodingFunction(currentWalkValue, nodeCount, index):
                 currentWalkValue = currentWalkValue + 1
-                coddedTree.append(0)
+                codedTree.append(0)
             else:
                 currentWalkValue = currentWalkValue - 1
-                coddedTree.append(1)
-        
-        return coddedTree
+                codedTree.append(1)
+
+        return codedTree
 
     @staticmethod
     def AScodingFunction(x, n, t):
-        value = ((x + 2)/(x + 1)) * (((2*n) - t - x)/(2 * ((2*n)-t)))
+        value = ((x + 2) / (x + 1)) * (((2 * n) - t - x) / (2 * ((2 * n) - t)))
         return value
-    
+
+    @staticmethod
+    def decodeNestedStringTree(codedTree):
+        formula = Tree()
+        nodeStack = []
+        # root
+        root = NodeFactory.generateInnerNode()
+        formula.add_node(root)
+        nodeStack.append(root)
+        print(codedTree)
+        for i in range(len(codedTree)):
+            char = codedTree[i]
+            if char == 0:
+                node = NodeFactory.generateInnerNode()
+                formula.add_node(node, nodeStack[-1])
+                nodeStack.append(node)
+            else:
+                if len(nodeStack[-2].successors(formula.identifier)) is not 2:
+                    nodeStack.pop()
+        return formula
+
+    @staticmethod
+    def doNothing():
+        pass 

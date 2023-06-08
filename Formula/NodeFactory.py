@@ -11,13 +11,6 @@ class NodeFactory:
     """
 
     @staticmethod
-    def generateRootNode():
-        entity = EntityFactory.generateRandomOperator()
-        root = Node(entity.__class__.__name__)
-        root.data = NodeData(entity, NodeFactory.NodeTypeOptions.INNER_NODE)
-        return root
-
-    @staticmethod
     def generateLeafNode():
         entity = EntityFactory.generateRandomValueEntity()
         node = Node(entity.__class__.__name__)

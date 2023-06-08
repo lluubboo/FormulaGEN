@@ -22,7 +22,7 @@ class Formula:
 
     def generateRandomCode(self):
         fGen = FormulaFactory(self.__boundaryConditions)
-        self.__formula = fGen.generateRandomFormulaCode()
+        self.__formula = fGen.decodeNestedStringTree(fGen.generateRandomFormulaCode())
 
     def getFormula(self):
         return self.__formula

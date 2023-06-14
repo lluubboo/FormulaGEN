@@ -1,13 +1,17 @@
 from Formula.BoundaryConditions import BoundaryConditions
-from Formula.FormulaFactory import FormulaFactory
 
 
 class Formula:
     """
-    Class represents math formula
+    Class represents math formula.
+    Formula is represented by binary tree data structure type.
     """
     __boundaryConditions = BoundaryConditions()
     __formula = None
+
+    def __int__(self, tree, boundaryConditions):
+        self.__formula = tree
+        self.__boundaryConditions = boundaryConditions
 
     def evaluate(self, node):
         # if node.is_leaf():
@@ -15,14 +19,6 @@ class Formula:
         # else:
         #     return evaluate() + evaluate()
         pass
-
-    def generateRandomRecursion(self):
-        fGen = FormulaFactory(self.__boundaryConditions)
-        self.__formula = fGen.generateRandomFormula()
-
-    def generateRandomCode(self):
-        fGen = FormulaFactory(self.__boundaryConditions)
-        self.__formula = fGen.decodeNestedStringTree(fGen.generateRandomFormulaCode())
 
     def getFormula(self):
         return self.__formula

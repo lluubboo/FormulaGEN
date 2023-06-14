@@ -1,8 +1,10 @@
 import random
-
 from treelib import Tree
 from Formula.BoundaryConditions import BoundaryConditions
+from Formula.Formula import Formula
+from Formula.FormulaUtils import NodeUtils
 from Formula.NodeFactory import NodeFactory
+
 
 class FormulaFactory:
     """
@@ -15,33 +17,17 @@ class FormulaFactory:
         self.__boundaryConditions = formulaBoundaryConditions
 
     def generateRandomFormula(self):
-        formula = Tree()
-        # tree root node
-        formula.add_node(NodeFactory.generateInnerNode())
-        # the rest of the tree
-        self.generateSuccessors(formula, formula.root)
+        tree = FormulaFactory.charsToTree(self.generateRandomFormulaBinaryRepresentation())
+        formula = Formula(tree, self.__boundaryConditions)
         return formula
 
-    def generateSuccessors(self, formula, ancestorNode):
-        # generate successors
-        for i in range(2):
-
-            # get successor node type
-            successorNodeType = NodeFactory.getRandomNodeType(
-                self.__boundaryConditions.getNodeTypeOptionsWeights())
-
-            if successorNodeType is NodeFactory.NodeTypeOptions.LEAF:
-                successorNode = NodeFactory.generateNode(successorNodeType)
-                formula.add_node(successorNode, ancestorNode)
-            else:
-                successorNode = NodeFactory.generateNode(successorNodeType)
-                formula.add_node(successorNode, ancestorNode)
-                self.generateSuccessors(formula, successorNode)
-
-    # generating balanced parenthesis strings in a uniform random manner
-    # Based on Arnold and Sleep - Uniform Random Number Generation of n Balanced Parenthesis Strings (1980)
-    # This solution leads immediately to an O(n) algorithm for the generator.
-    def generateRandomFormulaCode(self):
+    def generateRandomFormulaBinaryRepresentation(self):
+        """
+        Method generates balanced binaries representing binary tree in a uniform random manner.
+        Based on Arnold and Sleep - Uniform Random Number Generation of n Balanced Parenthesis Strings (1980)
+        This solution leads immediately to an O(n) algorithm for the generator.
+        :return:
+        """
         # 0, 1 - left, right parentheses
         codedTree = []
         # top most entities of tree
@@ -67,29 +53,57 @@ class FormulaFactory:
 
     @staticmethod
     def AScodingFunction(x, n, t):
+        """
+        Function which returns value by Arnold and Sleep - Uniform Random Number Generation of n Balanced Parenthesis
+        Strings (1980)
+        :param x:
+        :param n:
+        :param t:
+        :return:
+        """
         value = ((x + 2) / (x + 1)) * (((2 * n) - t - x) / (2 * ((2 * n) - t)))
         return value
 
     @staticmethod
-    def decodeNestedStringTree(codedTree):
+    def charsToTree(codedTree):
+        """
+        Method is converting binary list to binary tree (without leaf nodes) in O(n).
+        :param codedTree: binary list
+        :return: tree
+        """
         formula = Tree()
         nodeStack = []
-        # root
-        root = NodeFactory.generateInnerNode()
-        formula.add_node(root)
-        nodeStack.append(root)
+
         print(codedTree)
+
+        # rest of the tree
         for i in range(len(codedTree)):
+
             char = codedTree[i]
+
             if char == 0:
                 node = NodeFactory.generateInnerNode()
-                formula.add_node(node, nodeStack[-1])
+                formula.add_node(node, nodeStack[-1]) if nodeStack else formula.add_node(node)
                 nodeStack.append(node)
             else:
-                if len(nodeStack[-2].successors(formula.identifier)) is not 2:
-                    nodeStack.pop()
+                nodeStack.pop() if codedTree[i-1] == 1 else None
+
+        # add leafs
+        formula = FormulaFactory.addLeafsToTree(formula)
+
         return formula
 
     @staticmethod
-    def doNothing():
-        pass 
+    def addLeafsToTree(tree):
+        """
+        Method adds leaf's to generated leafless binary tree
+        :param: leafless binary tree
+        :return:binary tree
+        """
+        for node in tree.all_nodes():
+            freeSlotCount = NodeUtils.getRemainingChildrenCount(node, tree.identifier)
+            for freeSlot in range(freeSlotCount):
+                child = NodeFactory.generateLeafNode()
+                tree.add_node(child, node)
+        return tree
+

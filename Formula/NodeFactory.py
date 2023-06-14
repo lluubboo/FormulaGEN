@@ -1,4 +1,3 @@
-import random
 from enum import Enum
 from treelib import Node
 from Formula.Entities.EntityFactory import EntityFactory
@@ -31,16 +30,9 @@ class NodeFactory:
         else:
             return NodeFactory.generateInnerNode()
 
-    # controls the size of the tree by weighted random choice
-    # return format cannot be list
-    @staticmethod
-    def getRandomNodeType(weights):
-        return random.choices(NodeFactory.NodeTypeOptions.getNodeTypeOptions(),
-                              weights=(weights[0], weights[1]), k=1).pop()
-
     class NodeTypeOptions(Enum):
         """
-        Node basic type enum: Inner node or Lead
+        Node basic type enum: Inner node or Leaf
         """
 
         LEAF = "leaf"

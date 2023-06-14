@@ -1,13 +1,13 @@
-from Formula.Formula import Formula
+from Formula.BoundaryConditions import BoundaryConditions
+from Formula.FormulaFactory import FormulaFactory
 
-formulaRec = Formula()
-formulaRec.getFormulaBoundaryConditions().setBoundaryConditions(4, {1, 2, 3})
-formulaRec.generateRandomRecursion()
-print("Recursion formula")
-formulaRec.getFormula().show()
+# boundary conditions must be created
+boundaryConditions = BoundaryConditions()
+boundaryConditions.setBoundaryConditions(4, {1, 2, 3})
 
-formulaWow = Formula()
-formulaWow.getFormulaBoundaryConditions().setBoundaryConditions(4, {1, 2, 3})
-formulaWow.generateRandomCode()
-print("Sleep formula")
-formulaWow.getFormula().show()
+# formula factory
+fGen = FormulaFactory(boundaryConditions)
+
+# formula
+formula = fGen.generateRandomFormula()
+formula.getFormula().show()

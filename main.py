@@ -5,7 +5,7 @@ from Formula.FormulaFactory import FormulaFactory
 boundaryConditions = BoundaryConditions()
 boundaryConditions.setBoundaryConditions(4, {1, 2, 3})
 
-# formula factory
+# formula factory with boundary conditions
 fGen = FormulaFactory(boundaryConditions)
 
 # formula

@@ -8,7 +8,7 @@ from Formula.NodeFactory import NodeFactory
 
 class FormulaFactory:
     """
-    Class is formula generator
+    Class is used as formula generator.
     """
     __generatedFormula = None
     __boundaryConditions = BoundaryConditions()
@@ -17,11 +17,16 @@ class FormulaFactory:
         self.__boundaryConditions = formulaBoundaryConditions
 
     def generateRandomFormula(self):
-        tree = FormulaFactory.charsToTree(self.generateRandomFormulaBinaryRepresentation())
+        """
+        Method returns random generated formula.
+        Formula is specified by boundary conditions.
+        :return: Formula
+        """
+        tree = self.__charsToTree(self.__generateRandomFormulaBinaryRepresentation())
         formula = Formula(tree, self.__boundaryConditions)
         return formula
 
-    def generateRandomFormulaBinaryRepresentation(self):
+    def __generateRandomFormulaBinaryRepresentation(self):
         """
         Method generates balanced binaries representing binary tree in a uniform random manner.
         Based on Arnold and Sleep - Uniform Random Number Generation of n Balanced Parenthesis Strings (1980)
@@ -42,7 +47,7 @@ class FormulaFactory:
         for index in range(symbolCount):
             choice = random.random()
 
-            if choice <= FormulaFactory.AScodingFunction(currentWalkValue, nodeCount, index):
+            if choice <= self.__AScodingFunction(currentWalkValue, nodeCount, index):
                 currentWalkValue = currentWalkValue + 1
                 codedTree.append(0)
             else:
@@ -51,8 +56,7 @@ class FormulaFactory:
 
         return codedTree
 
-    @staticmethod
-    def AScodingFunction(x, n, t):
+    def __AScodingFunction(self, x, n, t):
         """
         Function which returns value by Arnold and Sleep - Uniform Random Number Generation of n Balanced Parenthesis
         Strings (1980)
@@ -64,8 +68,7 @@ class FormulaFactory:
         value = ((x + 2) / (x + 1)) * (((2 * n) - t - x) / (2 * ((2 * n) - t)))
         return value
 
-    @staticmethod
-    def charsToTree(codedTree):
+    def __charsToTree(self, codedTree):
         """
         Method is converting binary list to binary tree (without leaf nodes) in O(n).
         :param codedTree: binary list
@@ -86,19 +89,18 @@ class FormulaFactory:
                 formula.add_node(node, nodeStack[-1]) if nodeStack else formula.add_node(node)
                 nodeStack.append(node)
             else:
-                nodeStack.pop() if codedTree[i-1] == 1 else None
+                nodeStack.pop() if codedTree[i - 1] == 1 else None
 
         # add leafs
-        formula = FormulaFactory.addLeafsToTree(formula)
+        formula = self.__addLeafsToTree(formula)
 
         return formula
 
-    @staticmethod
-    def addLeafsToTree(tree):
+    def __addLeafsToTree(self, tree):
         """
         Method adds leaf's to generated leafless binary tree
         :param: leafless binary tree
-        :return:binary tree
+        :return: binary tree
         """
         for node in tree.all_nodes():
             freeSlotCount = NodeUtils.getRemainingChildrenCount(node, tree.identifier)
@@ -106,4 +108,3 @@ class FormulaFactory:
                 child = NodeFactory.generateLeafNode()
                 tree.add_node(child, node)
         return tree
-

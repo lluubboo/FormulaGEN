@@ -9,7 +9,7 @@ class Formula:
     __boundaryConditions = BoundaryConditions()
     __formula = None
 
-    def __int__(self, tree, boundaryConditions):
+    def __init__(self, tree, boundaryConditions):
         self.__formula = tree
         self.__boundaryConditions = boundaryConditions
 

@@ -1,4 +1,7 @@
+from treelib import Tree, Node
+
 from Formula.BoundaryConditions import BoundaryConditions
+from Formula.Entities.Operator import Operator
 
 
 class Formula:
@@ -9,16 +12,36 @@ class Formula:
     __boundaryConditions = BoundaryConditions()
     __formula = None
 
-    def __init__(self, tree, boundaryConditions):
+    def __init__(self, tree: Tree, boundaryConditions: BoundaryConditions):
         self.__formula = tree
         self.__boundaryConditions = boundaryConditions
 
-    def evaluate(self, node):
-        # if node.is_leaf():
-        #     return node.data.getValue()
-        # else:
-        #     return evaluate() + evaluate()
-        pass
+    def evaluateFormula(self):
+        result = 0
+        if self.__formula:
+            nodes = self.__formula.nodes
+            result = self.__evaluate(nodes.get('root'))
+        else:
+            print("Formula does not exist")
+        return result
+
+    def __evaluate(self, node: Node):
+        if node.is_leaf():
+            return node.data.value
+        else:
+            successors = self.__formula.children(node.identifier)
+            return self.__evaluateOperation(node.data, self.__evaluate(successors[0]),
+                                            self.__evaluate(successors[1]))
+
+    def __evaluateOperation(self, operator: Operator, varA, varB):
+        if operator.isAdition():
+            return varA + varB
+        elif operator.isDivision():
+            return varA / varB
+        elif operator.isSubtraction():
+            return varA - varB
+        elif operator.isMultiplication():
+            return varA * varB
 
     def getFormula(self):
         return self.__formula

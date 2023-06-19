@@ -4,9 +4,7 @@ from abc import ABC
 class FormulaEntity(ABC):
     """
     """
-
-    def __init__(self):
-        pass
+    tag = None
 
     @classmethod
     def getInstance(cls):

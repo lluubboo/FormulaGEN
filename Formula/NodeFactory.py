@@ -1,7 +1,5 @@
-from enum import Enum
 from treelib import Node
 from Formula.Entities.EntityFactory import EntityFactory
-from Formula.NodeDataWrapper import NodeData
 
 
 class NodeFactory:
@@ -13,31 +11,20 @@ class NodeFactory:
     def generateLeafNode():
         entity = EntityFactory.generateRandomValueEntity()
         node = Node(entity.__class__.__name__)
-        node.data = NodeData(entity, NodeFactory.NodeTypeOptions.LEAF)
+        node.data = entity
         return node
 
     @staticmethod
     def generateInnerNode():
         entity = EntityFactory.generateRandomOperator()
         node = Node(entity.__class__.__name__)
-        node.data = NodeData(entity, NodeFactory.NodeTypeOptions.INNER_NODE)
+        node.data = entity
         return node
 
     @staticmethod
-    def generateNode(nodeType):
-        if nodeType is NodeFactory.NodeTypeOptions.LEAF:
-            return NodeFactory.generateLeafNode()
-        else:
-            return NodeFactory.generateInnerNode()
-
-    class NodeTypeOptions(Enum):
-        """
-        Node basic type enum: Inner node or Leaf
-        """
-
-        LEAF = "leaf"
-        INNER_NODE = "inner_node"
-
-        @staticmethod
-        def getNodeTypeOptions():
-            return [NodeFactory.NodeTypeOptions.LEAF, NodeFactory.NodeTypeOptions.INNER_NODE]
+    def generateRootNode():
+        entity = EntityFactory.generateRandomOperator()
+        node = Node(entity.__class__.__name__)
+        node.identifier = "root"
+        node.data = entity
+        return node

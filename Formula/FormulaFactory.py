@@ -1,6 +1,9 @@
 import random
+import sys
+
 from treelib import Tree
 from Formula.BoundaryConditions import BoundaryConditions
+from Formula.Entities.ValueEntity import ValueEntity
 from Formula.Formula import Formula
 from Formula.FormulaUtils import NodeUtils
 from Formula.NodeFactory import NodeFactory
@@ -22,7 +25,7 @@ class FormulaFactory:
         Formula is specified by boundary conditions.
         :return: Formula
         """
-        tree = self.__charsToTree(self.__generateRandomFormulaBinaryRepresentation())
+        tree = self.__binaryToTree(self.__generateRandomFormulaBinaryRepresentation())
         formula = Formula(tree, self.__boundaryConditions)
         return formula
 
@@ -68,16 +71,14 @@ class FormulaFactory:
         value = ((x + 2) / (x + 1)) * (((2 * n) - t - x) / (2 * ((2 * n) - t)))
         return value
 
-    def __charsToTree(self, codedTree):
+    def __binaryToTree(self, codedTree):
         """
         Method is converting binary list to binary tree (without leaf nodes) in O(n).
         :param codedTree: binary list
         :return: tree
         """
-        formula = Tree()
+        tree = Tree()
         nodeStack = []
-
-        print(codedTree)
 
         # rest of the tree
         for i in range(len(codedTree)):
@@ -85,26 +86,37 @@ class FormulaFactory:
             char = codedTree[i]
 
             if char == 0:
-                node = NodeFactory.generateInnerNode()
-                formula.add_node(node, nodeStack[-1]) if nodeStack else formula.add_node(node)
+                if nodeStack:
+                    node = NodeFactory.generateInnerNode()
+                    tree.add_node(node, nodeStack[-1])
+                else:
+                    node = NodeFactory.generateRootNode()
+                    tree.add_node(node)
                 nodeStack.append(node)
             else:
                 nodeStack.pop() if codedTree[i - 1] == 1 else None
 
         # add leafs
-        formula = self.__addLeafsToTree(formula)
+        tree = self.__addLeafsToTree(tree)
 
-        return formula
+        return tree
 
-    def __addLeafsToTree(self, tree):
+    def __addLeafsToTree(self, tree: Tree):
         """
         Method adds leaf's to generated leafless binary tree
         :param: leafless binary tree
         :return: binary tree
         """
-        for node in tree.all_nodes():
-            freeSlotCount = NodeUtils.getRemainingChildrenCount(node, tree.identifier)
+        for innerNode in tree.all_nodes():
+            freeSlotCount = NodeUtils.getRemainingChildrenCount(innerNode, tree.identifier)
             for freeSlot in range(freeSlotCount):
-                child = NodeFactory.generateLeafNode()
-                tree.add_node(child, node)
+                leafNode = NodeFactory.generateLeafNode()
+                self.setLeafValue(leafNode.data, self.__boundaryConditions)
+                tree.add_node(leafNode, innerNode)
         return tree
+
+    def setLeafValue(self, formulaEntity: ValueEntity, boundaryConditions: BoundaryConditions):
+        if formulaEntity.isConstant():
+            formulaEntity.setValue(random.uniform(-1000000, 1000000))
+        else:
+            formulaEntity.setValue(random.choice(boundaryConditions.getUserParamList()))

@@ -9,15 +9,15 @@ class Formula:
     Class represents math formula.
     Formula is represented by binary tree data structure type.
     """
-    __boundaryConditions = BoundaryConditions()
-    __formula = None
+    __boundaryConditions: BoundaryConditions
+    __formula: Tree
 
     def __init__(self, tree: Tree, boundaryConditions: BoundaryConditions):
         self.__formula = tree
         self.__boundaryConditions = boundaryConditions
 
     def evaluateFormula(self):
-        result = 0
+        result = "NaN"
         if self.__formula:
             nodes = self.__formula.nodes
             result = self.__evaluate(nodes.get('root'))
@@ -34,7 +34,7 @@ class Formula:
                                             self.__evaluate(successors[1]))
 
     def __evaluateOperation(self, operator: Operator, varA, varB):
-        if operator.isAdition():
+        if operator.isAddition():
             return varA + varB
         elif operator.isDivision():
             return varA / varB

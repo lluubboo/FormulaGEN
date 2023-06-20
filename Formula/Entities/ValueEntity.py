@@ -3,7 +3,7 @@ from Formula.Entities.FormulaEntity import FormulaEntity
 
 class ValueEntity(FormulaEntity):
     """
-    Value entity is superclass of all formula entities with value [Constant, UserParameter].
+    Value entity is superclass of all formula entities except operators [Constant, UserParameter].
     """
     value = None
 

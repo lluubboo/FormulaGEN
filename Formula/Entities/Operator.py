@@ -7,7 +7,7 @@ class Operator(FormulaEntity):
         super().__init__()
         self.tag = self.__class__.__name__
 
-    def isAdition(self):
+    def isAddition(self):
         return isinstance(self, Addition)
 
     def isDivision(self):

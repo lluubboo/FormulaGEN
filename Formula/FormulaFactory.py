@@ -1,5 +1,4 @@
 import random
-import sys
 
 from treelib import Tree
 from Formula.BoundaryConditions import BoundaryConditions
@@ -12,9 +11,9 @@ from Formula.NodeFactory import NodeFactory
 class FormulaFactory:
     """
     Class is used as formula generator.
+    Factory class for formula (Tree).
     """
-    __generatedFormula = None
-    __boundaryConditions = BoundaryConditions()
+    __boundaryConditions: BoundaryConditions
 
     def __init__(self, formulaBoundaryConditions):
         self.__boundaryConditions = formulaBoundaryConditions
@@ -50,7 +49,7 @@ class FormulaFactory:
         for index in range(symbolCount):
             choice = random.random()
 
-            if choice <= self.__AScodingFunction(currentWalkValue, nodeCount, index):
+            if choice <= self.__codingFunction(currentWalkValue, nodeCount, index):
                 currentWalkValue = currentWalkValue + 1
                 codedTree.append(0)
             else:
@@ -59,7 +58,7 @@ class FormulaFactory:
 
         return codedTree
 
-    def __AScodingFunction(self, x, n, t):
+    def __codingFunction(self, x, n, t):
         """
         Function which returns value by Arnold and Sleep - Uniform Random Number Generation of n Balanced Parenthesis
         Strings (1980)
@@ -75,7 +74,7 @@ class FormulaFactory:
         """
         Method is converting binary list to binary tree (without leaf nodes) in O(n).
         :param codedTree: binary list
-        :return: tree
+        :return: Tree
         """
         tree = Tree()
         nodeStack = []
@@ -104,8 +103,8 @@ class FormulaFactory:
     def __addLeafsToTree(self, tree: Tree):
         """
         Method adds leaf's to generated leafless binary tree
-        :param: leafless binary tree
-        :return: binary tree
+        :param: Tree
+        :return: Tree
         """
         for innerNode in tree.all_nodes():
             freeSlotCount = NodeUtils.getRemainingChildrenCount(innerNode, tree.identifier)
@@ -116,6 +115,14 @@ class FormulaFactory:
         return tree
 
     def setLeafValue(self, formulaEntity: ValueEntity, boundaryConditions: BoundaryConditions):
+        """
+        Method fills empty value entities in the formula (UserParam & Constant).
+        Constant - random number from given interval
+        UserParam - random param from user param list
+        :param formulaEntity:
+        :param boundaryConditions:
+        :return:
+        """
         if formulaEntity.isConstant():
             formulaEntity.setValue(random.uniform(-1000000, 1000000))
         else:

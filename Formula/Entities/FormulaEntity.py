@@ -1,8 +1,7 @@
-from abc import ABC
 
-
-class FormulaEntity(ABC):
+class FormulaEntity:
     """
+    Class is superclass of all formula entities
     """
     tag = None
 

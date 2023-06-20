@@ -2,8 +2,7 @@ from Formula.BoundaryConditions import BoundaryConditions
 from Formula.FormulaFactory import FormulaFactory
 
 # boundary conditions must be created
-boundaryConditions = BoundaryConditions()
-boundaryConditions.setBoundaryConditions(5, [1, 2, 3])
+boundaryConditions = BoundaryConditions(5, [1, 2, 3])
 
 # formula factory with boundary conditions
 fGen = FormulaFactory(boundaryConditions)

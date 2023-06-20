@@ -1,4 +1,7 @@
 class NodeUtils:
+    """
+    Utility class
+    """
     @staticmethod
     def getSuccessorsCount(node, treeId):
         return len(node.successors(treeId))

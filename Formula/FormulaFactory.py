@@ -16,7 +16,14 @@ class FormulaFactory:
     __boundaryConditions: BoundaryConditions
 
     def __init__(self, formulaBoundaryConditions):
-        self.__boundaryConditions = formulaBoundaryConditions
+        self.processBoundaryConditions(formulaBoundaryConditions)
+
+    def processBoundaryConditions(self, formulaBoundaryConditions):
+        if formulaBoundaryConditions.isValid():
+            self.__boundaryConditions = formulaBoundaryConditions
+        else:
+            print("Boundary conditions processing failed. Formula cannot be generated")
+            exit()
 
     def generateRandomFormula(self):
         """
@@ -24,11 +31,12 @@ class FormulaFactory:
         Formula is specified by boundary conditions.
         :return: Formula
         """
-        tree = self.__binaryToTree(self.__generateRandomFormulaBinaryRepresentation())
-        formula = Formula(tree, self.__boundaryConditions)
+        binaryTreeCode = self.__generateBinaryTreeBinaryRepresentation()
+        binaryTree = self.__binaryListToBinaryTree(binaryTreeCode)
+        formula = Formula(binaryTree, self.__boundaryConditions)
         return formula
 
-    def __generateRandomFormulaBinaryRepresentation(self):
+    def __generateBinaryTreeBinaryRepresentation(self):
         """
         Method generates balanced binaries representing binary tree in a uniform random manner.
         Based on Arnold and Sleep - Uniform Random Number Generation of n Balanced Parenthesis Strings (1980)
@@ -70,7 +78,7 @@ class FormulaFactory:
         value = ((x + 2) / (x + 1)) * (((2 * n) - t - x) / (2 * ((2 * n) - t)))
         return value
 
-    def __binaryToTree(self, codedTree):
+    def __binaryListToBinaryTree(self, codedTree):
         """
         Method is converting binary list to binary tree (without leaf nodes) in O(n).
         :param codedTree: binary list
@@ -127,3 +135,4 @@ class FormulaFactory:
             formulaEntity.setValue(random.uniform(-1000000, 1000000))
         else:
             formulaEntity.setValue(random.choice(boundaryConditions.getUserParamList()))
+

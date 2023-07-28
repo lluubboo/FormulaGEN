@@ -4,7 +4,8 @@ from dataclasses import dataclass
 @dataclass
 class BoundaryConditions:
     """
-    Boundary conditions for formula generator
+    Just simple dataclass boundary conditions for formula generator.
+    (choosedLeafCount, [userParamList])
     """
 
     # theoretical formula size, limited by leaf count in tree representation
@@ -18,3 +19,11 @@ class BoundaryConditions:
     def getUserParamList(self):
         return self.__userParamList
 
+    def isValid(self):
+        if not self.__userParamList or self.__leafCount == 0:
+            print("Not valid boundary conditions")
+            print("Leaf count: ", self.__leafCount)
+            print("User parameter list: ", self.__userParamList)
+            return False
+        else:
+            return True
